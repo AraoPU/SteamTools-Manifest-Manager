@@ -112,7 +112,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QPlainTextEdit" name="ContentEdit">
+    <widget class="QPlainTextEdit" name="txt_Content">
      <property name="acceptDrops">
       <bool>false</bool>
      </property>

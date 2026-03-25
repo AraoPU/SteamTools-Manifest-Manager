@@ -27,7 +27,7 @@ private:
     void dropEvent(QDropEvent *event) override;
 
 private:
-    void import(const QString &path);
+    void import(const QString &path, bool append = false);
 
 private:
     Ui::AddLuaFileDialog *ui;

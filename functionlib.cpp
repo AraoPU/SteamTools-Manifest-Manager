@@ -12,41 +12,31 @@
 
 namespace FunctionLib
 {
+// 格式为 游戏名、appid、空行 各一行
 QStringList LuaInfo::toList(const QString &name, const QString &appid)
 {
     return QStringList({
-                        "-- 游戏名称: " + name,
-                        "-- AppID: " + appid,
-                        ""
+        "-- 游戏名称: " + name,
+        "-- AppID: " + appid,
+        ""
     });
 }
 
+// 格式为 游戏名、appid、空行 各一行
 QString LuaInfo::toString(const QString &name, const QString &appid)
 {
-    return LuaInfo::toList(name, appid).join("\n");
+    return LuaInfo::toList(name, appid).join('\n');
 }
 
+// 格式为 游戏名、appid、空行 各一行
 QStringList LuaInfo::toList()
 {
     return LuaInfo::toList(this->name, this->appID);
 }
-
+// 格式为 游戏名、appid、空行 各一行
 QString LuaInfo::toString()
 {
     return LuaInfo::toString(this->name, this->appID);
-}
-
-
-
-QString generateFileEditErrorString(FileEditErrorType flags)
-{
-    QStringList errorContent;
-
-    if (flags & FunctionLib::NewNameExisted) errorContent.append("文件名更新失败：新文件名已存在");
-    if (flags & FunctionLib::RenameFailed)   errorContent.append("文件名更新失败：重命名失败");
-    if (flags & FunctionLib::OpenFileFailed) errorContent.append("文件编辑失败：文件打开失败");
-
-    return errorContent.join("\n");
 }
 
 
@@ -55,7 +45,7 @@ void closeSteam()
 {
     QProcess process;
     process.start("taskkill", QStringList() << "/f" << "/im" << "Steam.exe");
-    process.waitForFinished();
+    process.waitForFinished(3000);
 }
 
 void closeSteamDetached()
@@ -119,24 +109,24 @@ void baiduSearch(const QString &content)
 
 void explorerOpenPath(const QString &path)
 {
-    QProcess().startDetached("explorer.exe", { QDir::toNativeSeparators(path) });
+    QProcess::startDetached("explorer.exe", { QDir::toNativeSeparators(path) });
 }
 
 void explorerSelectPath(const QString &path)
 {
-    QProcess().startDetached("explorer.exe", { "/select,", QDir::toNativeSeparators(path) });
+    QProcess::startDetached("explorer.exe", { "/select,", QDir::toNativeSeparators(path) });
 }
 
 
 
-QStringList splitStringLines(const QString &content, bool skipEmpty)
+QStringList splitStringLines(const QString &content)
 {
     static const QRegularExpression lineSplitRegex(R"(\R)", QRegularExpression::DontCaptureOption);
 
-    return content.split(lineSplitRegex, skipEmpty ? Qt::SkipEmptyParts : Qt::KeepEmptyParts);
+    return content.split(lineSplitRegex);
 }
 
-LuaInfo detectLuaInfo(const QStringList &content, const QString &defaultName, const QString &defaultAppID)
+LuaInfo findLuaInfo(const QStringList &content, const QString &defaultName, const QString &defaultAppID)
 {
     static const QStringView gameNamePrefix    = u"-- 游戏名称:";
     static const QStringView gameAppIDPrefix   = u"-- AppID:";
@@ -166,62 +156,45 @@ LuaInfo detectLuaInfo(const QStringList &content, const QString &defaultName, co
     return info;
 }
 
-LuaInfo detectLuaInfo(const QString &content, const QString &defaultName, const QString &defaultAppID)
+LuaInfo findLuaInfo(const QString &content, const QString &defaultName, const QString &defaultAppID)
 {
-    return detectLuaInfo(splitStringLines(content), defaultName, defaultAppID);
-}
-
-void formatLua(QStringList &content, const QString &name, const QString &appid)
-{
-    for (int i = content.size() - 1; i >= 0; --i)
-    {
-        content[i] = content[i].trimmed();
-
-        // addappid 已足够，setManifestid 不需要，所以非 addappid 全删
-        if (!content[i].startsWith("addappid"))
-        {
-            content.removeAt(i);
-            continue;
-        }
-    }
-
-    content = LuaInfo::toList(name, appid) + content;
-}
-
-void formatLua(QString &content, const QString &name, const QString &appid)
-{
-    QStringList lines = splitStringLines(content);
-    formatLua(lines, name, appid);
-    content = lines.join("\n");
-}
-
-void formatLua(QStringList &content)
-{
-    LuaInfo info = detectLuaInfo(content);
-
-    formatLua(content, info.name, info.appID);
-}
-
-void formatLua(QString &content)
-{
-    LuaInfo info = detectLuaInfo(content);
-
-    formatLua(content, info.name, info.appID);
+    return findLuaInfo(splitStringLines(content), defaultName, defaultAppID);
 }
 
 QString formattedLua(const QString &content, const QString &name, const QString &appid)
 {
-    QStringList lines = splitStringLines(content);
-    formatLua(lines, name, appid);
-    return lines.join("\n");
+    static const QRegularExpression pattern(R"pattern((?<!\w)addappid\s*\(\s*(?<appid>\d+)\s*(?:,\s*(?<type>\d+)\s*(?:,\s*(?<quote>["'])(?<depot>\w+)\k<quote>\s*)?)?\))pattern");
+
+    QStringList lines;
+    QRegularExpressionMatchIterator it = pattern.globalMatch(content);
+    while (it.hasNext())
+    {
+        QRegularExpressionMatch match = it.next();
+
+        QString line = "addappid(" + QString::number(match.captured("appid").toInt());
+
+        const QString type = match.captured("type");
+        if (!type.isEmpty())
+        {
+            line.append(", " + QString::number(type.toInt()));
+
+            const QString depot = match.captured("depot");
+            if (!depot.isEmpty()) line.append(", \"" + depot + "\"");
+        }
+
+        line.append(")");
+
+        lines.append(line);
+    }
+
+    return LuaInfo::toString(name, appid) + "\n" + lines.join('\n');
 }
 
-QString formattedLua(const QString &content)
+void formatLua(QStringList &content, const QString &name, const QString &appid)
 {
-    LuaInfo info = detectLuaInfo(content);
-
-    return formattedLua(content, info.name, info.appID);
+    content = splitStringLines(formattedLua(content.join('\n'), name, appid));
 }
+
 
 
 FileEditErrorType renameFile(QFile *file, const QString &newName)
@@ -231,7 +204,7 @@ FileEditErrorType renameFile(QFile *file, const QString &newName)
     QFileInfo oldFileInfo(file->fileName());
     QString newPath = oldFileInfo.path() + "/" + newName;
 
-    if (newPath != oldFileInfo.filePath())
+    if (QFileInfo(newPath) != oldFileInfo)
     {
         if (QFile::exists(newPath))
         {
@@ -256,35 +229,22 @@ FileEditErrorType renameFile(const QString &filePath, const QString &newName)
     return renameFile(&file, newName);
 }
 
-FileEditErrorType editLuaFile(const QString &filePath, const QString &gameName, const QString &gameAppID, bool shouleRename)
+FileEditErrorType editLuaFile(const QString &filePath, const QString &gameName, const QString &gameAppID, bool shouldRename)
 {
     FileEditErrorType errorType = NoError;
 
     QFile file(filePath);
 
-    if (shouleRename)
-    {
-        errorType |= renameFile(&file, gameAppID + "." + QFileInfo(filePath).suffix());
-    }
+    if (shouldRename) errorType |= renameFile(&file, gameAppID + "." + QFileInfo(filePath).suffix());
 
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        return errorType | OpenFileFailed;
-    }
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return errorType | OpenFileFailed;
 
     QString content = formattedLua(QTextStream(&file).readAll(), gameName, gameAppID);
     file.close();
 
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
-    {
-        return errorType | OpenFileFailed;
-    }
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) return errorType | OpenFileFailed;
 
-    QTextStream out(&file);
-    out.setEncoding(QStringConverter::Utf8);
-
-    out << content;
-    out.flush();
+    QTextStream(&file) << content;
 
     file.close();
 
@@ -301,7 +261,9 @@ QStringList getMimeDataPaths(const QMimeData *mime)
         {
             if (url.isLocalFile())
             {
-                paths.append(url.toLocalFile());
+                const QString path = url.toLocalFile();
+
+                if (QFileInfo(path).isFile()) paths.append(path);
             }
         }
     }

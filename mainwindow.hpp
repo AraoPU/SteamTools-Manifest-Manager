@@ -33,8 +33,6 @@ private slots:
 
     void runItem(QListWidgetItem *item);
 
-    void clearList();
-
 
 
     void on_lst_Items_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);

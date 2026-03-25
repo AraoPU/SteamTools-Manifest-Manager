@@ -5,6 +5,7 @@
 #include <QFile>
 #include <qevent.h>
 #include <QMimeData>
+#include "QRegularExpressionValidator"
 
 
 
@@ -17,6 +18,11 @@ namespace Constant
     constexpr char luaEnabledSuffix[]  = "lua";
     constexpr char luaDisabledSuffix[] = "disabled";
     constexpr char ItemDisabledStyleSheet[] = "color: #FF4444";
+
+
+
+    inline const QRegularExpression pathRegex(R"pattern([^\\/:*?"<>|]*)pattern");
+    inline const QRegularExpressionValidator pathValidator(pathRegex);
 }
 
 
@@ -49,7 +55,23 @@ enum FileEditErrorTypeFlag
 };
 Q_DECLARE_FLAGS(FileEditErrorType, FileEditErrorTypeFlag)
 
-QString generateFileEditErrorString(FileEditErrorType flags);
+template <typename T>
+concept StringListJoinAble = requires (T sep)
+{
+    { std::declval<QStringList>().join(sep) } -> std::convertible_to<QString>;
+};
+
+template <StringListJoinAble T = char>
+inline QString generateFileEditErrorString(const FileEditErrorType flags, const T join = '\n')
+{
+    QStringList errorContent;
+
+    if (flags & FunctionLib::NewNameExisted) errorContent.append("文件名更新失败——新文件名已存在");
+    if (flags & FunctionLib::RenameFailed)   errorContent.append("文件名更新失败——重命名失败");
+    if (flags & FunctionLib::OpenFileFailed) errorContent.append("文件编辑失败——文件打开失败");
+
+    return errorContent.join(join);
+}
 
 
 
@@ -74,23 +96,20 @@ void explorerSelectPath(const QString &path);
 
 
 
-QStringList splitStringLines(const QString &content, bool skipEmpty = true);
+QStringList splitStringLines(const QString &content);
 
-LuaInfo detectLuaInfo(const QStringList &content, const QString &defaultName = "", const QString &defaultAppID = "");
-LuaInfo detectLuaInfo(const QString &content, const QString &defaultName = "", const QString &defaultAppID = "");
+LuaInfo findLuaInfo(const QStringList &content, const QString &defaultName = "", const QString &defaultAppID = "");
+LuaInfo findLuaInfo(const QString &content, const QString &defaultName = "", const QString &defaultAppID = "");
 
-void formatLua(QStringList &content, const QString &name, const QString &appid);
-void formatLua(QString &content, const QString &name, const QString &appid);
-void formatLua(QStringList &content);
-void formatLua(QString &content);
 QString formattedLua(const QString &content, const QString &name, const QString &appid);
-QString formattedLua(const QString &content);
+void formatLua(QStringList &content, const QString &name, const QString &appid);
+
 
 
 FileEditErrorType renameFile(QFile *file, const QString &newName);
 FileEditErrorType renameFile(const QString &filePath, const QString &newName);
 
-FileEditErrorType editLuaFile(const QString &filePath, const QString &gameName, const QString &gameAppID, bool shouleRename = true);
+FileEditErrorType editLuaFile(const QString &filePath, const QString &gameName, const QString &gameAppID, bool shouldRename = true);
 
 
 

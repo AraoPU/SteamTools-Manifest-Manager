@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QValidator>
 
 
 
@@ -16,6 +17,9 @@ AddLuaFileDialog::AddLuaFileDialog(const QString &luaDir, QWidget *parent)
     , ui(new Ui::AddLuaFileDialog)
 {
     ui->setupUi(this);
+
+
+    ui->le_FileName->setValidator(&Constant::pathValidator);
 
     this->luaDir = luaDir;
 }
@@ -34,22 +38,28 @@ void AddLuaFileDialog::dragEnterEvent(QDragEnterEvent *event)
 
 void AddLuaFileDialog::dropEvent(QDropEvent *event)
 {
-    const QString path = FunctionLib::getMimeDataPaths(event->mimeData()).constFirst();
+    const QStringList paths = FunctionLib::getMimeDataPaths(event->mimeData());
 
-    if (path.isEmpty() || !QFile::exists(path))
+    if (paths.isEmpty())
     {
         event->ignore();
         return;
     }
 
-    this->import(path);
+    for (const QString &path : paths)
+    {
+        this->import(path, true);
+    }
 
     event->acceptProposedAction();
 }
 
-void AddLuaFileDialog::import(const QString &path)
+
+
+void AddLuaFileDialog::import(const QString &path, bool append)
 {
     if (path.isEmpty()) return;
+
 
 
     // 文件
@@ -68,11 +78,12 @@ void AddLuaFileDialog::import(const QString &path)
 
     const QString content = QTextStream(&file).readAll();
 
-    ui->ContentEdit->setPlainText(content);
+    if (append) ui->txt_Content->setPlainText(ui->txt_Content->toPlainText() + "\n\n" + content);
+    else ui->txt_Content->setPlainText(content);
 
 
     // 标记
-    const FunctionLib::LuaInfo info = FunctionLib::detectLuaInfo(content, "", fileBaseName);
+    const FunctionLib::LuaInfo info = FunctionLib::findLuaInfo(content, "", fileBaseName);
 
     ui->le_Name->setText(info.name);
     ui->le_Appid->setText(info.appID);
@@ -102,20 +113,21 @@ void AddLuaFileDialog::on_CancelButton_clicked()
 void AddLuaFileDialog::on_OKButton_clicked()
 {
     // 数据准备
-    QStringList          content { FunctionLib::splitStringLines(ui->ContentEdit->toPlainText()) };
+    QStringList          content { FunctionLib::splitStringLines(ui->txt_Content->toPlainText()) };
     FunctionLib::LuaInfo info;
 
     bool aName  = ui->chk_AutoName->isChecked();
     bool aAppid = ui->chk_AutoAppid->isChecked();
     bool aFile  = ui->chk_AutoFileName->isChecked();
 
-    if (aName || aAppid || aFile) info = FunctionLib::detectLuaInfo(content);
+    if (aName || aAppid || aFile) info = FunctionLib::findLuaInfo(content);
 
 
 
     QString gameName     = (aName && info.hasName) ? info.name : ui->le_Name->text();
     QString appid        = (aAppid && info.hasAppID) ? info.appID : ui->le_Appid->text();
 
+    // 文件名可能为空的情况无需在意
     QString fileBaseName = !aFile ? ui->le_FileName->text() : appid;
     QString filePath     = QDir(this->luaDir).filePath((fileBaseName.endsWith(QString(".%1").arg(Constant::luaEnabledSuffix)) || fileBaseName.endsWith(QString(".%1").arg(Constant::luaDisabledSuffix))) ? fileBaseName : (QString("%1.%2").arg(fileBaseName, Constant::luaEnabledSuffix)));
 
@@ -145,10 +157,7 @@ void AddLuaFileDialog::on_OKButton_clicked()
         return;
     }
 
-    QTextStream stream(&file);
-    stream.setEncoding(QStringConverter::Utf8);
-
-    stream << content.join("\n");
+    QTextStream(&file) << content.join('\n');
 
     file.close();
 

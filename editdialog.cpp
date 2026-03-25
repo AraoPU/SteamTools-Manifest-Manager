@@ -45,11 +45,11 @@ void EditDialog::on_OKButton_clicked()
         QMessageBox::warning(this, "编辑时发生错误", FunctionLib::generateFileEditErrorString(error));
     }
 
-    QFileInfo fi(this->path);
+    QFileInfo fileInfo(this->path);
 
     emit editFinished(
         error,
-        (update && !(error & FunctionLib::NewNameExisted) && !(error & FunctionLib::RenameFailed)) ? (QDir(fi.path()).filePath(appid) + "." + fi.suffix()) :  this->path,
+        (update && !(error & FunctionLib::NewNameExisted) && !(error & FunctionLib::RenameFailed)) ? (QDir(fileInfo.path()).filePath(appid) + "." + fileInfo.suffix()) :  this->path,
         (error & FunctionLib::OpenFileFailed) ? this->name  : name,
         (error & FunctionLib::OpenFileFailed) ? this->appid : appid
     );
