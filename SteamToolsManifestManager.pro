@@ -53,7 +53,6 @@ RESOURCES += \
 
 OTHER_FILES += \
     .gitignore \
-    deploy.bat \
     LICENSE.txt \
     README.md
 
@@ -64,7 +63,7 @@ RC_ICONS = ./Resources/Icons/icon.ico
 
 VERSION = 1.6.2
 MAKE_TARGET_COMPANY = "LT_JJ"
-QMAKE_TARGET_DESCRIPTION = "An application for manage SteamTools manifest (Lua) files."
+QMAKE_TARGET_DESCRIPTION = "An application for managing SteamTools manifest (Lua) files."
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2025-2026 LT_JJ. Licensed under MIT."
 
 
@@ -101,7 +100,7 @@ win32
     # 4: $${BUILD_LICENSE}
     # 5: $${BUILD_README}
 
-    deploy.commands = $${PWD}/deploy.bat                 \
+    deploy.commands = E:/Qt/Tools/deploy.bat             \
                     \"$$system_path($${WINDEPLOYQT})\"   \
                     \"$$system_path($${BUILD_EXE})\"     \
                     \"$$system_path($${DEPLOY_EXE})\"    \
