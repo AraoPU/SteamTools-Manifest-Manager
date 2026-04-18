@@ -32,18 +32,19 @@
 - **如果你想：** 给里面的 `SteamTools Manifest Manager.exe` 添加快捷方式到桌面
 
 ### 卸载
-- 直接删掉软件文件和快捷方式即可，这软件没有设置需要保存
+- 直接删掉软件文件和快捷方式即可，这软件不会保存任何数据
 
 ---
 
 # 开发相关
 
 ## 环境
+- **构建工具**: qmake
+
 **建议：**
 - **Qt**: Qt 6
 - **C++ 标准**: C++23
 - **构建套件**: LLVM-MinGW
-- **构建工具**: qmake
 
 ## 部署
 - 部署脚本 [deploy.bat](deploy.bat) 依赖 [Bandizip](https://www.bandisoft.com/bandizip) 压缩
