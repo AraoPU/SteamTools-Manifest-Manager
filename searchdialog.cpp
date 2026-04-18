@@ -66,6 +66,4 @@ void SearchDialog::on_btn_Search_clicked()
     default:
         break;
     }
-
-    this->close();
 }
