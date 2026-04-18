@@ -7,6 +7,8 @@
 #include <QDir>
 #include <QRegularExpression>
 #include <QUrlQuery>
+#include <QFileInfo>
+
 
 
 namespace FunctionLib

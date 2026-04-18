@@ -30,9 +30,9 @@ inline QString generateFileEditErrorString(const FileEditErrorType flags, const 
 {
     QStringList errorContent;
 
-    if (flags & FunctionLib::NewNameExisted) errorContent.append("文件名更新失败——新文件名已存在");
-    if (flags & FunctionLib::RenameFailed)   errorContent.append("文件名更新失败——重命名失败");
-    if (flags & FunctionLib::OpenFileFailed) errorContent.append("文件编辑失败——文件打开失败");
+    if      (flags & FunctionLib::NewNameExisted) errorContent.append("文件名更新失败——新文件名已存在");
+    else if (flags & FunctionLib::RenameFailed  ) errorContent.append("文件名更新失败——重命名失败");
+    if      (flags & FunctionLib::OpenFileFailed) errorContent.append("文件编辑失败——文件打开失败");
 
     return errorContent.join(join);
 }
