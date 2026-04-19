@@ -21,13 +21,13 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="gbx_Tool">
+    <widget class="QGroupBox" name="gbx_Tools">
      <property name="title">
       <string>工具</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
-       <widget class="QPushButton" name="btn_Tool_SteamTools">
+       <widget class="QPushButton" name="btn_Tools_SteamTools">
         <property name="text">
          <string>SteamTools</string>
         </property>
@@ -50,7 +50,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btn_Manifest_SteamManifestHub_2">
+       <widget class="QPushButton" name="btn_Manifest_ManifestHub">
+        <property name="text">
+         <string>Manifest Hub</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_Manifest_SteamManifestHub">
         <property name="text">
          <string>Steam Manifest Hub</string>
         </property>
@@ -59,21 +66,14 @@
       <item>
        <widget class="QPushButton" name="btn_Manifest_SteamManifestDownloader">
         <property name="text">
-         <string>Steam 游戏清单下载器</string>
+         <string>Steam Manifest Downloader</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="btn_Manifest_SteamDownloader">
         <property name="text">
          <string>清单不求人</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btn_Manifest_ManifestHub">
-        <property name="text">
-         <string>Manifest Hub</string>
         </property>
        </widget>
       </item>
@@ -81,20 +81,20 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="gbx_Data">
+    <widget class="QGroupBox" name="gbx_DataBase">
      <property name="title">
-      <string>数据</string>
+      <string>数据库</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="QPushButton" name="btn_Data_SteamDB">
+       <widget class="QPushButton" name="btn_DataBase_SteamDB">
         <property name="text">
          <string>SteamDB</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btn_Data_SteamUI">
+       <widget class="QPushButton" name="btn_DataBase_SteamUI">
         <property name="text">
          <string>SteamUI</string>
         </property>

@@ -17,18 +17,19 @@ public:
     ~OpenWebsiteDialog();
 
 private slots:
-    void on_btn_Tool_SteamTools_clicked();
+    // Tools
+    void on_btn_Tools_SteamTools_clicked();
+    // Manifest
     void on_btn_Manifest_Assiw_clicked();
-    void on_btn_Manifest_SteamManifestHub_2_clicked();
     void on_btn_Manifest_ManifestHub_clicked();
-    void on_btn_Data_SteamDB_clicked();
-    void on_btn_Data_SteamUI_clicked();
-    void on_btn_Community_3ACommunity_clicked();
-
+    void on_btn_Manifest_SteamManifestHub_clicked();
     void on_btn_Manifest_SteamManifestDownloader_clicked();
-
-    void on_pushButton_clicked();
-
+    void on_btn_Manifest_SteamDownloader_clicked();
+    // DataBase
+    void on_btn_DataBase_SteamDB_clicked();
+    void on_btn_DataBase_SteamUI_clicked();
+    // Community
+    void on_btn_Community_3ACommunity_clicked();
     void on_btn_Community_Caigamer_clicked();
 
 private:
