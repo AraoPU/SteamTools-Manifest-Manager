@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>250</width>
-    <height>454</height>
+    <height>483</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,6 +18,9 @@
   </property>
   <property name="windowTitle">
    <string>网站</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -50,16 +53,16 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btn_Manifest_ManifestHub">
+       <widget class="QPushButton" name="btn_Manifest_ManifestHub2">
         <property name="text">
-         <string>Manifest Hub</string>
+         <string>Manifest Hub 2</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btn_Manifest_SteamManifestHub">
+       <widget class="QPushButton" name="btn_Manifest_SteamDownloader">
         <property name="text">
-         <string>Steam Manifest Hub</string>
+         <string>清单不求人</string>
         </property>
        </widget>
       </item>
@@ -71,9 +74,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btn_Manifest_SteamDownloader">
+       <widget class="QPushButton" name="btn_Manifest_SteamManifestHub">
         <property name="text">
-         <string>清单不求人</string>
+         <string>Steam Manifest Hub</string>
         </property>
        </widget>
       </item>

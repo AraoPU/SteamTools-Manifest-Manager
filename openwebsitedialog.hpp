@@ -21,10 +21,10 @@ private slots:
     void on_btn_Tools_SteamTools_clicked();
     // Manifest
     void on_btn_Manifest_Assiw_clicked();
-    void on_btn_Manifest_ManifestHub_clicked();
-    void on_btn_Manifest_SteamManifestHub_clicked();
-    void on_btn_Manifest_SteamManifestDownloader_clicked();
+    void on_btn_Manifest_ManifestHub2_clicked();
     void on_btn_Manifest_SteamDownloader_clicked();
+    void on_btn_Manifest_SteamManifestDownloader_clicked();
+    void on_btn_Manifest_SteamManifestHub_clicked();
     // DataBase
     void on_btn_DataBase_SteamDB_clicked();
     void on_btn_DataBase_SteamUI_clicked();
