@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SteamTools Manifest Manager</title>
+    <link rel="icon" type="image/svg+xml" href="Icons\icon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 72px;
+        }
+
+        .divider {
+            width: 100%;
+            height: 1px;
+            background-color: #333333;
+            margin: 0 auto 56px auto;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-content img {
+            width: 112px;
+            height: 112px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .header-content h1, .section-title {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .header-content h1 {
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .section-title {
+            font-size: 20px;
+        }
+
+        .description {
+            margin-bottom: 56px;
+            text-align: center;
+        }
+
+        .description h2 {
+            margin-bottom: 16px;
+        }
+
+        .description p {
+            color: #b0b0b0;
+            font-size: 16px;
+        }
+
+        .features, .tips, .warning, .usage-section {
+            margin-bottom: 56px;
+        }
+
+        .features h2, .usage-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .features ul, .tips ul, .warning ul, .usage-section ul {
+            list-style: none;
+        }
+
+        .features li, .usage-section li {
+            position: relative;
+            color: #b0b0b0;
+            margin-bottom: 10px;
+            padding-left: 24px;
+            font-size: 16px;
+        }
+
+        .features li::before, .usage-section li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #569cd6;
+            font-weight: 600;
+        }
+
+        .download-section {
+            background: linear-gradient(135deg, #1e1e1e 0%, #252525 100%);
+            padding: 40px 32px;
+            border-radius: 12px;
+            margin-bottom: 56px;
+            text-align: center;
+            border: 1px solid #333333;
+        }
+
+        .download-section h2 {
+            margin-bottom: 24px;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #1060a0;
+            color: #ffffff;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn:hover {
+            background-color: #1177bb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(11, 99, 156, 0.3);
+        }
+
+        .go-download-btn {
+            display: flex;
+            width: 100%;
+        }
+
+        .requirements {
+            margin-top: 28px;
+            color: #999999;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .tips h2, .warning h2 {
+            font-size: 15px;
+            margin-bottom: 8px;
+            color: #999999;
+            font-weight: 500;
+        }
+
+        .tips li, .warning li {
+            color: #999999;
+            font-size: 14px;
+        }
+
+        .usage-section h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #e0e0e0;
+            font-weight: 600;
+        }
+
+        .usage-section ul {
+            margin-bottom: 24px;
+        }
+
+        .author-section {
+            text-align: center;
+            padding: 48px 0;
+            border-top: 1px solid #2a2a2a;
+        }
+
+        .author-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .author-content img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+        }
+
+        .author-name {
+            font-size: 16px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .copyright {
+            font-size: 13px;
+            color: #666666;
+        }
+
+        .github-links {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .github-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #999999;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .github-link:hover {
+            color: #ffffff;
+            background-color: #1e1e1e;
+        }
+
+        .github-link img {
+            width: 18px;
+            height: 18px;
+            filter: invert(60%);
+        }
+
+        .github-link:hover img {
+            filter: invert(100%);
+        }
+
+        footer {
+            text-align: center;
+            padding-top: 24px;
+            color: #555555;
+            font-size: 13px;
+        }
+
+        footer a {
+            color: #569cd6;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background-color: #1e1e1e;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            border: 1px solid #333333;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: #888888;
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: #ffffff;
+            background-color: #333333;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 24px;
+        }
+
+        .password-section {
+            margin-bottom: 24px;
+        }
+
+        .password-label {
+            font-size: 14px;
+            color: #999999;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .password-hint {
+            font-size: 12px;
+            color: #666666;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .password-display {
+            width: 100%;
+            background-color: #2a2a2a;
+            border: 1px solid #444444;
+            border-radius: 10px;
+            padding: 14px 20px;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .password-display:hover {
+            border-color: #569cd6;
+            background-color: #333333;
+        }
+
+        .password-display.copied {
+            background-color: #1b3d1e;
+            border-color: #2e7d32;
+            color: #4caf50;
+        }
+
+        .toast {
+            position: fixed;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3a3a3a;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 2000;
+            transition: top 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast.show {
+            top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <img src="Resources/Icons/icon.svg" alt="SteamTools Manifest Manager 图标">
+                <h1>SteamTools Manifest Manager</h1>
+            </div>
+        </header>
+
+        <div class="divider"></div>
+
+        <section class="description">
+            <h2 class="section-title">软件简介</h2>
+            <p>一个用于管理 SteamTools 清单（Lua）文件的图形化工具。</p>
+        </section>
+
+        <section class="download-section">
+            <h2 class="section-title">下载</h2>
+            <div class="download-buttons">
+                <a href="https://github.com/LTJJer/SteamTools-Manifest-Manager/releases/latest" target="_blank" class="btn">从 GitHub 下载</a>
+                <a href="" onclick="openModal(); return false;" class="btn">从 蓝奏云 下载</a>
+            </div>
+            <div class="requirements">
+                <p>系统要求：Windows 系统</p>
+                <p>环境要求：已安装 Steam 客户端</p>
+            </div>
+        </section>
+
+        <div class="modal-overlay" id="modal">
+            <div class="modal">
+                <button class="modal-close" onclick="closeModal()">×</button>
+                <h3 class="modal-title">从 蓝奏云 下载</h3>
+                <div class="password-section">
+                    <span class="password-label">密码（点击即可复制）：</span>
+                    <div class="password-display" onclick="copyPassword()" id="passwordDisplay">123</div>
+                </div>
+                <a href="https://wwama.lanzouu.com/b00odu1v2d" target="_blank" class="btn go-download-btn">前往下载地址</a>
+            </div>
+        </div>
+
+        <div class="toast" id="toast">复制成功</div>
+
+        <section class="features">
+            <h2 class="section-title">功能</h2>
+            <ul>
+                <li>添加/删除/启用禁用/编辑/打开/格式化 Lua</li>
+                <li>复制 Lua 的信息（前提是有相关信息）</li>
+                <li>运行 Lua 的 AppID 指向的游戏</li>
+                <li>打开 Lua 商店界面</li>
+                <li>搜索 Lua</li>
+                <li>关闭/重启 Steam</li>
+                <li>打开友情站</li>
+            </ul>
+        </section>
+
+        <section class="tips">
+            <h2>小贴士</h2>
+            <ul>
+                <li>在主界面和添加清单（Lua）界面可以拖拽导入文件</li>
+            </ul>
+        </section>
+
+        <section class="warning">
+            <h2>注意</h2>
+            <ul>
+                <li>格式化会删除所有语法不正确及非 addappid 的内容，虽然没什么影响，但也请谨慎使用</li>
+            </ul>
+        </section>
+
+        <section class="usage-section">
+            <h2 class="section-title">使用</h2>
+            <h3>要求</h3>
+            <ul>
+                <li>Windows 系统</li>
+                <li>已安装 Steam 客户端</li>
+            </ul>
+            <h3>安装</h3>
+            <ul>
+                <li>下载最新 Release 里的 7z 压缩包，然后解压到你喜欢的位置</li>
+                <li>如果你想：给里面的 SteamTools Manifest Manager.exe 添加快捷方式到桌面</li>
+            </ul>
+            <h3>卸载</h3>
+            <ul>
+                <li>直接删掉软件文件和快捷方式即可，这软件不会保存任何数据</li>
+            </ul>
+        </section>
+
+        <section class="author-section">
+            <div class="github-links">
+                <a href="https://github.com/LTJJer/SteamTools-Manifest-Manager" target="_blank" class="github-link">
+                    <img src="Resources/GitHub.svg" alt="GitHub">
+                    项目仓库
+                </a>
+            </div>
+            <p class="copyright">Copyright (C) 2025-2026 LT_JJ. Licensed under MIT.</p>
+        </section>
+
+        <footer>
+            <p>感谢 <a href="https://www.steamtools.net" target="_blank">SteamTools</a> 和所有开源库及社区贡献者</p>
+        </footer>
+    </div>
+
+    <script>
+        const modal = document.getElementById('modal');
+        const passwordDisplay = document.getElementById('passwordDisplay');
+        const toast = document.getElementById('toast');
+        let toastTimeout;
+
+        function openModal() {
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        function showToast() {
+            if (toastTimeout) {
+                clearTimeout(toastTimeout);
+            }
+            toast.classList.add('show');
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        function copyPassword() {
+            navigator.clipboard.writeText('123').then(() => {
+                showToast();
+            });
+        }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

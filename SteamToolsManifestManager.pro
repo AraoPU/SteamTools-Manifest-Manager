@@ -58,7 +58,8 @@ RESOURCES += \
 OTHER_FILES += \
     .gitignore \
     LICENSE.txt \
-    README.md
+    README.md \
+    index.html
 
 
 
